@@ -27,6 +27,9 @@ export const scrollToId = (id) => {
 // Swap {{merge_fields}} for sample data, and optionally force dark mode for the preview.
 export function renderEmail(html, { sample = true, dark = false } = {}) {
   let out = sample ? html.replace(/\{\{(\w+)\}\}/g, (m, k) => SAMPLE[k] ?? m) : html
+  // The preview's Light/Dark toggle decides the theme, not the visitor's system setting,
+  // so the email's automatic dark mode query is switched off here (copy and download keep it).
+  out = out.replace(/\(prefers-color-scheme:\s*dark\)/g, '(max-width: 0px)')
   out = out.replace(/<\/head>/i, (m) => `<style>body{margin:0}</style>${dark ? `<style>${DARK_RULES}</style>` : ''}${m}`)
   return out
 }
